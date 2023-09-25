@@ -1,0 +1,1032 @@
+openapi: 3.0.0
+info:
+  description: |
+    Descrição de endpoints do Grupo A para o trabalho da disciplina de Programação Modular / Engenharia de Software 2 do BSI - UNIRIO - 23.2.
+  version: "1.0.0"
+  title: Vá de Bicicleta
+  #termsOfService: "http://swagger.io/terms/"
+  #contact:
+    #email: apiteam@swagger.io
+  #license:
+    #name: Apache 2.0
+    #url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+servers:
+  # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/ERICLEAL26/ES2/1.0.0
+  #- url: "https://petstore.swagger.io/v2"
+tags:
+  - name: Pessoas
+    description: Gerenciamento dos usuários e funcionários
+    # externalDocs:
+    #   description: Find out more
+    #   url: 'http://swagger.io'
+  - name: Infraestrutura
+    description: Gerenciamento de bicicletas, tótens e trancas
+    # externalDocs:
+    #   description: Find out more about our store
+    #   url: 'http://swagger.io'
+  - name: Financeiro
+    description: Gerenciamento de cobranças
+    # externalDocs:
+    #   description: Find out more about our store
+    #   url: 'http://swagger.io'
+paths:
+  # PESSOAS
+  /ciclistas:
+    post:
+      tags:
+        - Pessoas
+      summary: Adiciona um novo ciclista
+      operationId: addCiclista
+      responses:
+        "201":
+          description: Ciclista cadastrado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CiclistaResponse"
+        "422":
+          description: Entrada inválida
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DadosInvalidos"
+      requestBody:
+        $ref: "#/components/requestBodies/Ciclista"
+  /ciclistas/{idCiclista}:
+    put:
+      tags:
+        - Pessoas
+      summary: Atualiza um ciclista existente
+      operationId: updateCiclista
+      parameters:
+        - name: idCiclista
+          in: path
+          description: Id do ciclista
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Ciclista atualizado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CiclistaResponse"
+        "400":
+          description: ID inválido
+        "404":
+          description: Ciclista não encontrado
+        "422":
+          description: Dados inválidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DadosInvalidos"
+      requestBody:
+        $ref: "#/components/requestBodies/Ciclista"
+  /ciclistas/existeEmail/{email}:
+    get:
+      tags:
+        - Pessoas
+      description: Verifica se existe um ciclista com o email informado
+      parameters: 
+        - name: email
+          in: path
+          description: Email do ciclista
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Email encontrado
+          content:
+            application/json:
+              schema:
+                type: boolean
+                example: true
+        '404':
+          description: Email não encontrado
+          content:
+            application/json:
+              schema:
+                type: boolean
+                example: false
+  /ciclistas/{idCiclista}/cartaoDeCredito:
+    put:
+      tags:
+        - Pessoas
+      summary: Atualiza o cartão de crédito do ciclista
+      description: Este endpoint é usado para atualizar os dados do cartão de crédito do ciclista.
+      parameters:
+        - name: idCiclista
+          in: path
+          description: Id do ciclista
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Cartão de crédito atualizado com sucesso.
+        '400':
+          description: Solicitação inválida. O ID do ciclista não existe ou os dados do cartão de crédito são inválidos.
+      requestBody:
+        $ref: '#/components/requestBodies/CartaoCredito'
+  /ciclistas/{idCiclista}/ativar:
+    post:
+      tags:
+        - Pessoas
+      summary: Ativa um ciclista
+      description: Este endpoint é usado para confirmar o email do ciclista e ativar sua conta.
+      parameters:
+        - name: idCiclista
+          in: path
+          description: Id do ciclista
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Ciclista ativado com sucesso.
+          content:
+            application/json:
+              schema:
+                type: boolean
+                example: true
+        '400':
+          description: Solicitação inválida. Os dados não correspondem a um registro pendente.
+  /enviarEmail:
+    post:
+      tags:
+        - Pessoas
+      description: Envia um email para o ciclista para verificação
+      responses:
+        '200':
+          description: Email enviado com sucesso
+        '402':
+          description: Erro ao enviar email
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: guilherme@email.com
+  /ciclistas/{idCiclista}/enviarEmail:
+    post:
+      tags:
+        - Pessoas
+      description: Envia email para o email do ciclista
+      parameters: 
+        - name: idCiclista
+          in: path
+          description: Id do ciclista
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Email enviado com sucesso
+        '402':
+          description: Erro ao enviar email
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example:
+  /funcionarios:
+    get:
+      tags:
+        - Pessoas
+      description: Retorna os dados dos funcionários
+      parameters: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/FuncionariosResponse"
+        '404':
+          description: Nenhum funcionário encontrado
+    post:
+      tags:
+        - Pessoas
+      description: Adiciona um novo funcionário
+      parameters: []
+      responses:
+        '201':
+          description: Funcionário criado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FuncionariosResponse"
+        '422':
+          description: Dados inválidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DadosInvalidos"
+      requestBody:
+        $ref: "#/components/requestBodies/FuncionarioRequest"
+  /funcionarios/{matricula}:
+    put:
+      tags:
+        - Pessoas
+      description: Atualiza um funcionário existente
+      parameters: 
+        - name: matricula
+          in: path
+          description: Matrícula do funcionário
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Funcionário atualizado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FuncionariosResponse"
+        '404':
+          description: Funcionário não encontrado
+        '422':
+          description: Dados inválidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DadosInvalidos"
+      requestBody:
+        $ref: "#/components/requestBodies/FuncionarioRequest"
+    delete:
+      tags:
+        - Pessoas
+      description: Remove um funcionário existente
+      parameters: 
+        - name: matricula
+          in: path
+          description: Matrícula do funcionário
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Funcionário removido com sucesso
+        '404':
+          description: Funcionário não encontrado
+      # requestBody:
+      #   $ref: '#/components/requestBodies/Tranca'
+
+  # INFRAESTRUTURA
+  /bicicletas:
+    post:
+      tags:
+        - Infraestrutura
+      summary: Adicionar uma nova bicicleta
+      operationId: addBicicleta
+      responses:
+        "201":
+          description: Bicicleta cadastrada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BicicletaResponse"
+        "422":
+          description: Dados inválidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DadosInvalidos"
+      requestBody:
+        $ref: "#/components/requestBodies/Bicicleta"
+
+    get:
+      tags:
+        - Infraestrutura
+      summary: Retornar todas as bicicletas existentes
+      operationId: getBicicletas
+      responses:
+        "200":
+          description: Bicicletas retornadas com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BicicletaAllResponse"
+        # nenhuma bicicleta existente para listar
+
+  /bicicletas/{idBicicleta}:
+    put:
+      tags:
+        - Infraestrutura
+      summary: Atualizar dados de uma bicicleta existente
+      operationId: updateBicicleta
+      parameters:
+        - name: idBicicleta
+          in: path
+          description: Id da bicicleta
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Bicicleta atualizada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BicicletaResponse"
+        "404":
+          description: Bicicleta não encontrada
+        "422":
+          description: Dados inválidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DadosInvalidos"
+      requestBody:
+        $ref: "#/components/requestBodies/Bicicleta"
+
+    delete:
+      tags:
+        - Infraestrutura
+      summary: Remover uma bicicleta existente
+      operationId: removeBicicleta
+      parameters:
+        - name: idBicicleta
+          in: path
+          description: Id da bicicleta
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Bicicleta removida com sucesso
+      # requestBody:
+      #   $ref: '#/components/requestBodies/Bicicleta'
+
+  /trancas:
+    post:
+      tags:
+        - Infraestrutura
+      summary: Adicionar uma nova tranca
+      operationId: addTranca
+      responses:
+        "201":
+          description: Tranca cadastrada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TrancaResponse"
+        "422":
+          description: Dados inválidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DadosInvalidos"
+      requestBody:
+        $ref: "#/components/requestBodies/Tranca"
+
+    get:
+      tags:
+        - Infraestrutura
+      summary: Retornar todas as trancas existentes
+      operationId: getTrancas
+      responses:
+        "200":
+          description: Trancas retornadas com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TrancaAllResponse"
+        # nenhuma tranca existente para listar
+
+  /trancas/{idTranca}:
+    put:
+      tags:
+        - Infraestrutura
+      summary: Atualizar dados de uma tranca existente
+      operationId: updateTranca
+      parameters:
+        - name: idTranca
+          in: path
+          description: Id da tranca
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Tranca atualizada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TrancaResponse"
+        "404":
+          description: Tranca não encontrada
+        "422":
+          description: Dados inválidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DadosInvalidos"
+      requestBody:
+        $ref: "#/components/requestBodies/Tranca"
+
+    delete:
+      tags:
+        - Infraestrutura
+      summary: Remover uma tranca existente
+      operationId: removeTranca
+      parameters:
+        - name: idTranca
+          in: path
+          description: Id da tranca
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Tranca removida com sucesso
+        "404":
+          description: Totem não encontrado
+      # requestBody:
+      #   $ref: '#/components/requestBodies/Tranca'
+
+  /totens:
+    post:
+      tags:
+        - Infraestrutura
+      summary: Adicionar um novo totem
+      operationId: addTotem
+      responses:
+        "201":
+          description: Totem cadastrado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TotemResponse"
+        "422":
+          description: Dados inválidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DadosInvalidos"
+        "500":
+          description: Erro no servidor
+      requestBody:
+        $ref: "#/components/requestBodies/Totem"
+
+    get:
+      tags:
+        - Infraestrutura
+      summary: Retornar todos os totens existentes
+      operationId: getTotens
+      responses:
+        "200":
+          description: Totens retornados com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TotemAllResponse"
+        "500":
+          description: Erro no servidor
+
+  /totens/{idTotem}:
+    put:
+      tags:
+        - Infraestrutura
+      summary: Atualizar dados de um totem existente
+      operationId: updateTotem
+      parameters:
+        - name: idTotem
+          in: path
+          description: Id do totem
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Totem atualizado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TotemResponse"
+        "404":
+          description: Totem não encontrado
+        "422":
+          description: Dados inválidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DadosInvalidos"
+        "500":
+          description: Erro no servidor
+      requestBody:
+        $ref: "#/components/requestBodies/Totem"
+
+    delete:
+      tags:
+        - Infraestrutura
+      summary: Remover um totem
+      operationId: removeTotem
+      parameters:
+        - name: idTotem
+          in: path
+          description: Id do totem
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Totem removido com sucesso
+        "404":
+          description: Totem não encontrado
+  
+ # FINANCEIRO
+  /validaCartaoCredito:
+    post:
+      tags:
+        - Financeiro
+      description: Valida o cartão de crédito do ciclista
+      responses:
+        '200':
+          description: Cartão validado com sucesso
+          content:
+            application/json:
+              schema:
+                type: boolean
+                example: true
+        '422':
+          description: Erro ao validar cartão de crédito
+          content:
+            application/json:
+              schema:
+                type: boolean
+                example: false
+      requestBody:
+        $ref: "#/components/requestBodies/CartaoCredito"
+
+    
+
+#externalDocs:
+  #description: Find out more about Swagger
+  #url: "http://swagger.io"
+components:
+  schemas:
+    Ciclista:
+      type: object
+      required:
+        - nome
+        - CPF
+        - Passaporte
+        - Senha
+        - cartaoCredito
+        - urlFoto
+      properties:
+        nome:
+          type: string
+          example: Guilherme
+        eBrasileiro:
+          type: boolean
+        cpf:
+          type: string
+          minLength: 11
+          maxLength: 11
+          example: 12345678911
+        passaporte:
+          $ref: "#/components/schemas/Passaporte"
+        senha:
+          type: string
+        cartaoDeCredito:
+          $ref: "#/components/schemas/CartaoCredito"
+        urlFoto:
+          type: string
+      xml:
+        name: Ciclista
+    CiclistaResponse:
+      type: object
+      required:
+        - id
+        - nome
+        - CPF
+        - Passaporte
+        - Senha
+        - cartaoCredito
+        - urlFoto
+      properties:
+        id:
+          type: integer
+          example: 1
+        nome:
+          type: string
+          example: Guilherme
+        eBrasileiro:
+          type: boolean
+        cpf:
+          type: string
+          minLength: 11
+          maxLength: 11
+          example: 12345678911
+        passaporte:
+          $ref: "#/components/schemas/Passaporte"
+        senha:
+          type: string
+        urlFoto:
+          type: string
+      xml:
+        name: Ciclista
+    Passaporte:
+      type: object
+      properties:
+        numero:
+          type: string
+          example: CS265436
+        validade:
+          type: string
+          format: date
+        pais:
+          type: string
+          maxLength: 2
+          example: BR
+    CartaoCredito:
+      type: object
+      properties:
+        numero:
+          type: string
+          minLength: 16
+          maxLength: 16
+          example: 1234123412341234
+        nome:
+          type: string
+          example: Guilherme Pereira Tavares
+        validade:
+          type: string
+          format: date
+        cvv:
+          type: string
+          minLength: 3
+          maxLength: 3
+          example: 123
+    Bicicleta:
+      type: object
+      required:
+        - marca
+        - modelo
+        - ano
+        - status
+      properties:
+        marca:
+          type: string
+          example: Merida
+        modelo:
+          type: string
+          example: Modelo1
+        ano:
+          type: string
+          format: date
+          example: 2019
+        status:
+          type: string
+          example: nova
+      xml:
+        name: Bicicleta
+    BicicletaResponse:
+      type: object
+      required:
+        - numero
+        - marca
+        - modelo
+        - ano
+        - status
+      properties:
+        numero: # isso é a id no banco né? tem que ter aqui mesmo?
+          type: integer
+          format: int64
+          example: 12345
+        marca:
+          type: string
+          example: Merida
+        modelo:
+          type: string
+          example: Modelo1
+        ano:
+          type: string
+          format: date
+          example: 2019
+        status:
+          type: string
+          example: nova
+        localizacao:
+          type: string # é string mesmo? não tenho certeza
+          example: Rio de Janeiro, RJ
+      xml:
+        name: BicicletaResponse
+    BicicletaAllResponse:
+      type: array
+      items:
+        type: object
+        required:
+          - numero
+          - marca
+          - modelo
+          - ano
+          - status
+        properties:
+          numero: # isso é a id no banco né? tem que ter aqui mesmo?
+            type: integer
+            format: int64
+            example: 12345
+          marca:
+            type: string
+            example: Merida
+          modelo:
+            type: string
+            example: Modelo1
+          ano:
+            type: string
+            format: date
+            example: 2019
+          status:
+            type: string
+            example: nova
+          localizacao:
+            type: string
+            example: Rio de Janeiro, RJ
+        xml:
+          name: BicicletaAllResponse
+    Tranca:
+      type: object
+      required:
+        - anoFabricacao
+        - modelo
+        - status
+      properties:
+        status:
+          type: string
+          example: nova
+        anoFabricacao:
+          type: string
+          format: date
+          example: 2022
+        modelo:
+          type: string
+          example: Modelo de Tranca
+      xml:
+        name: Tranca
+    TrancaResponse:
+      type: object
+      required:
+        - numero
+        - anoFabricacao
+        - modelo
+        - status
+        - localizacao
+      properties:
+        numero: # isso continua aqui?
+          type: integer
+          format: int64
+          example: 12345
+        status:
+          type: string
+          example: nova
+        localizacao:
+          type: string
+          example: Rio de Janeiro, RJ # como q vai ser isso aqui?
+        anoFabricacao:
+          type: string
+          format: date
+          example: 2022
+        modelo:
+          type: string
+          example: Modelo de Tranca
+      xml:
+        name: TrancaResponse
+    TrancaAllResponse:
+      type: array
+      items:
+        type: object
+        required:
+          - anoFabricacao
+          - modelo
+          - status
+        properties:
+          numero: # isso continua aqui?
+            type: integer
+            format: int64
+            example: 12345
+          status:
+            type: string
+            example: nova
+          localizacao:
+            type: string
+            example: Rio de Janeiro, RJ # como q vai ser isso aqui?
+          anoFabricacao:
+            type: string
+            format: date
+            example: 2022
+          modelo:
+            type: string
+            example: Modelo de Tranca
+        xml:
+          name: TrancaAllResponse
+    Totem:
+      type: object
+      required:
+        - localizacao
+        - descricao
+      properties:
+        localizacao:
+          type: string
+          example: Rio de Janeiro, RJ # como q vai ser isso aqui?
+        descricao:
+          type: string
+          example: "Descricao do totem"
+      xml:
+        name: Totem
+    TotemResponse:
+      type: object
+      required:
+        - numero
+        - localizacao
+        - descricao
+      properties:
+        numero:
+          type: integer
+          format: int64
+          example: 1
+        localizacao:
+          type: string
+          example: Rio de Janeiro, RJ # como q vai ser isso aqui?
+        descricao:
+          type: string
+          #example: Totem blablabla
+      xml:
+        name: TotemResponse
+    TotemAllResponse:
+      type: array
+      items:
+        type: object
+        required:
+          - numero
+          - localizacao
+          - descricao
+        properties:
+          numero:
+            type: integer
+            format: int64
+            example: 1
+          localizacao:
+            type: string
+            example: Rio de Janeiro, RJ # como q vai ser isso aqui?
+          descricao:
+            type: string
+            #example: Totem blablabla
+        xml:
+          name: TotemAllResponse
+    DadosInvalidos:
+      type: object
+      required:
+        - campo
+        - descricao
+      properties:
+        campo:
+          type: string
+          example: campo
+        descricao:
+          type: string
+          example: detalhamento do erro que causou a invalidez
+      xml:
+        name: DadosInvalidos
+    FuncionariosResponse:
+      type: object
+      properties:
+        matricula:
+          type: integer
+          format: int64
+          example: 12345
+        nome:
+          type: string
+          example: Barbara Domingues
+        idade:
+          type: integer
+          format: int64
+          example: 25
+        funcao:
+          type: string
+          example: Gerente
+        cpf:
+          type: string
+          example: 12345678911
+        email:
+          type: string
+          example: dbarbara@empresa.com
+    FuncionarioRequest:
+      type: object
+      required:
+        - nome
+        - idade
+        - funcao
+        - cpf
+        - email
+        - senha
+      properties:
+        nome:
+          type: string
+          example: Barbara Domingues
+        idade:
+          type: integer
+          format: int64
+          example: 25
+        email:
+          type: string
+          example: dbarbara@empresa.com
+        senha:
+          type: string
+          example: 123456
+        funcao:
+          type: string
+          example: Gerente
+        cpf:
+          type: string
+          example: 12345678911
+
+  requestBodies:
+    Ciclista:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Ciclista"
+        application/xml:
+          schema:
+            $ref: "#/components/schemas/Ciclista"
+      description: Objeto de ciclista
+      required: true
+    Bicicleta:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Bicicleta"
+        application/xml:
+          schema:
+            $ref: "#/components/schemas/Bicicleta"
+      description: Objeto de bicicleta
+      required: true
+    Tranca:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Tranca"
+        application/xml:
+          schema:
+            $ref: "#/components/schemas/Tranca"
+      description: Objeto de tranca
+      required: true
+    Totem:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Totem"
+        application/xml:
+          schema:
+            $ref: "#/components/schemas/Totem"
+      description: Objeto de totem
+      required: true
+    CartaoCredito:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/CartaoCredito"
+        application/xml:
+          schema:
+            $ref: "#/components/schemas/CartaoCredito"
+      description: Objeto de cartão de crédito
+      required: true
+    FuncionarioRequest:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/FuncionarioRequest"
+        application/xml:
+          schema:
+            $ref: "#/components/schemas/FuncionarioRequest"
+      description: Objeto de funcionário
+      required: true
