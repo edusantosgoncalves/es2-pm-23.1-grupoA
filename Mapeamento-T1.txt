@@ -1,0 +1,99 @@
+UC01 – 
+Cadastrar Ciclista (fluxo principal)
+    Passo 1: 
+        [FRONT] GET /ciclista/existeEmail/{email} [R3] [A1] (Microsserviço Pessoa)
+	
+    Passos 6 - 9:    
+	[FRONT] POST /ciclista [R1, R2] [A2] (Microsserviço Pessoa)   
+        [BACK] POST /validaCartaoDeCredito [A3] (Microsserviço Financeiro)   
+        [BACK] POST /enviarEmail [E1] (Microsserviço Pessoa)
+
+
+UC02 – 
+Confirmar E-mail (fluxo principal)
+    Passo 2:    
+        [FRONT] POST /ciclista/{idCiclista}/ativar (Microsserviço Pessoa)
+
+
+UC06 – 
+Alterar dados do ciclista (fluxo principal)
+    Passo1:   
+	[FRONT] GET  /ciclista/{idCiclista} (Microsserviço Pessoa)
+
+    Passo 3:
+   	[FRONT] PUT /ciclista/{idCiclista} [R1, R2] [A1, A2] (Microsserviço Pessoa)
+
+    Passo 4:
+	[BACK] POST ciclista/{id}/enviarEmail [E1] (Microsserviço Pessoa)
+
+
+UC07 – 
+Alterar cartão (fluxo principal)
+    Passos 2 - 5:    
+	[FRONT] PUT /ciclista/{idCiclista}/cartaoDeCredito (Microsserviço Pessoa)   
+	[BACK] POST /validaCartaoDeCredito [A1] [A2] (Microsserviço Financeiro)
+	[BACK] POST /enviarEmail [E1] (Microsserviço Pessoa)
+
+
+UC10 - 
+Manter Cadastro de Bicicletas (fluxo principal)
+    Passo 1:   
+	[FRONT] GET /bicicleta (Microsserviço Infraestrutura)
+
+    Passos 5 - 7:    
+	[FRONT] POST /bicicleta (Microsserviço Infraestrutura)
+
+UC10 - Manter Cadastro de Bicicletas (fluxo alternativo A1)
+    Passos 1 - 5:    
+	[FRONT] PUT /bicicleta/{idBicicleta} [A5] (Microsserviço Infraestrutura)
+
+UC10 - Manter Cadastro de Bicicletas (fluxo alternativo A2)
+    Passo 3:    
+	[FRONT] DELETE /bicicleta/{idBicicleta} (Microsserviço Infraestrutura)
+
+
+UC13 - 
+Manter Cadastro de Trancas (fluxo principal)
+    Passo 1:    
+	[FRONT] GET /tranca (Microsserviço Infraestrutura)
+
+    Passos 5 - 7:    
+	[FRONT] POST /tranca (Microsserviço Infraestrutura)
+
+UC13 - Manter Cadastro de Trancas (fluxo alternativo A1)
+     Passos 3 - 4:  
+	[FRONT] PUT /tranca/{idTranca} [A5] (Microsserviço Infraestrutura)
+
+UC13 - Manter Cadastro de Trancas (fluxo alternativo A1)
+    Passos 2 - 3:    
+	[FRONT] DELETE /tranca/{idTranca} (Microsserviço Infraestrutura)
+
+
+UC14 - 
+Manter Cadastro de Totens (fluxo principal)
+    Passo 1:
+        [FRONT] GET /totem (Microsserviço Infraestrutura)
+
+    Passos 5 - 7:
+        [FRONT] POST /totem (Microsserviço Infraestrutura)
+
+UC14 - Manter Cadastro de Totens (fluxo alternativo A1)
+    Passos 2 - 3:    
+	[FRONT] DELETE /totem/{idTotem} (Microsserviço Infraestrutura)
+
+
+UC15 - 
+Manter Cadastro de Funcionário (fluxo principal)
+    Passo 1:   
+	[FRONT] GET /funcionario (Microsserviço Pessoa)
+
+    Passos 5 - 6:
+    	[FRONT] POST /funcionario (Microsserviço Pessoa)
+
+UC15 - Manter Cadastro de Funcionário (fluxo alternativo A1)
+    Passos 3 - 4:    
+	[FRONT] PUT /funcionario/{idFuncionario} [A5] (Microsserviço Pessoa)
+
+UC15 - Manter Cadastro de Funcionário (fluxo alternativo A2)
+    Passos 2 - 3:
+	[FRONT] DELETE /funcionario/{idFuncionario} (Microsserviço Pessoa)
