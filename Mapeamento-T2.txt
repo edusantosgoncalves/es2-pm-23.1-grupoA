@@ -1,0 +1,155 @@
+OBS1: ENDPOINT MARCADOS COM "--" se referem a funções de outras "entidades" do próprio microsserviço, logo, o mapeamento desses é somente para documentação, já que serão manipulados por funções, já que estão no mesmo microsserviço.
+OBS2: Marcações em "//" estão somente para auxiliar no desenvolvimento do Swagger
+
+UC03 – 
+Alugar Bicicleta (fluxo principal)
+    Passo 3: 
+        [FRONT] POST /alugar (Microsserviço Financeiro) [R3]
+        [BACK] GET /tranca/{idTranca}/estaLivre (Microsserviço Infraestrutura) [A1] [E5]
+
+    Passo 4:
+        [BACK] GET /tranca/{idTranca}/bicicleta (Microsserviço Infraestrutura) [E2] [E4]
+
+    Passo 5:
+        [BACK] GET /ciclista/{idCiclista}/podeAlugar (Microsserviço Pessoa) [R1] [R5] [E1]
+	
+    Passos 6-7:
+        [BACK] GET /ciclista/{idCiclista}/cartaoDeCredito  (Microsserviço Pessoa)
+        --[BACK] POST /cobrar (Microsserviço Financeiro) [R2] [E3]
+    
+    Passo 9:
+        [BACK] PUT /bicicleta/{idBicicleta}/status (Microsserviço Infraestrutura) 
+        
+    Passo 10:
+        [BACK] PUT /tranca/{idTranca}/liberar (Microsserviço Infraestrutura) 
+        
+    Passo 11:
+        [BACK] POST /enviarEmail (Microsserviço Pessoa) [R4] 
+
+UC03 – 
+Alugar Bicicleta (fluxo exceção E1)
+    Passo 1: 
+        [BACK] POST /enviarEmail (Microsserviço Pessoa)
+
+UC03 – 
+Alugar Bicicleta (fluxo exceção E3)
+    Passo 1: 
+        [BACK] POST /registrarCobrancaEmFila (Microsserviço Pessoa)
+
+
+UC04 – 
+Devolver bicicleta (fluxo principal)
+    Passo 2:    
+        [FRONT] POST /devolver (Microsserviço Financeiro) [R2]
+        [BACK] GET /bicicleta/{idBicicleta} (Microsserviço Infraestrutura) [A4] [E1]
+
+    Passo 3-4:   
+        --[BACK] GET /aluguel/{idBicicleta} (Microsserviço Financeiro)
+
+    Passos 5:
+        [BACK] PUT /bicicleta/{idBicicleta}/status (Microsserviço Infraestrutura)
+
+    Passo 6:
+        [BACK] PUT /tranca/{idTranca}/trancar (Microsserviço Infraestrutura)
+
+    Passo 7:
+        [BACK] POST /enviarEmail (Microsserviço Pessoa) [R3] 
+
+UC04 - 
+Devolver bicicleta (fluxo alternativo A1)
+    Passos 1-2:
+        [BACK] GET /ciclista/{idCiclista}/cartaoDeCredito(Microsserviço Pessoa) 
+        --[BACK] POST /cobrar (Microsserviço Financeiro) [A2] 
+
+UC04 - 
+Devolver bicicleta (fluxo alternativo A2)
+    Passos 1-2:
+        --[BACK] POST /registrarCobrancaEmFila (Microsserviço Financeiro) [A2] 
+
+
+UC04 - 
+Devolver bicicleta (fluxo alternativo A3)
+    Passos 1-2:
+        [FRONT] PUT /bicicleta/{idBicicleta}/reparar (Microsserviço Infraestrutura)
+
+*UC08 - 
+Incluir Bicicleta na Rede de Totens (fluxo principal)
+    Passos 2-3:
+        [FRONT] PUT /bicicleta/{idBicicleta}/incluirNaRede [E1] [E3] (Microsserviço Infraestrutura) //No corpo, receberá o id da tranca ao qual se associará 
+
+    Passo 4:
+        --[BACK] PUT /tranca/{idTranca}/trancar (Microsserviço Infraestrutura)
+        
+    Passo 6:
+        [BACK] POST /enviarEmail (Microsserviço Pessoa) [E2]
+
+
+*UC09 - 
+Retirar Bicicleta do Sistema de Totens para Reparo (fluxo principal)
+    Passos 4-6:
+        [FRONT] PUT /tranca/{idTranca}/destrancar [A2] [E1] (Microsserviço Infraestrutura)
+        
+    Passos 7-9:
+        [FRONT] PUT /bicicleta/{idBicicleta}/removerDaRede [R1] [E3] (Microsserviço Infraestrutura) //No corpo, receberá a opção de reparo (status novo da bicicleta)
+
+    Passo 10:
+        [BACK] POST /enviarEmail [R2] [E2] (Microsserviço Pessoa)
+     
+*UC09 - 
+Retirar Bicicleta do Sistema de Totens para Reparo (fluxo alternativo A1)
+    Passos 2-4:
+        [FRONT] PUT /tranca/{idTranca}/destrancar [A2] [E1] (Microsserviço Infraestrutura)
+        
+    Passos 5-7:
+        [FRONT] PUT /bicicleta/{idBicicleta}/removerDaRede [R1] [E3] (Microsserviço Infraestrutura) //No corpo, receberá a opção de reparo (status novo da bicicleta)
+
+    Passo 8:
+        [BACK] POST /enviarEmail [R2] [E2] (Microsserviço Pessoa)
+          
+
+*UC11 - 
+Incluir Tranca em Totem (fluxo principal)
+    Passos 2-4:
+        [FRONT] PUT /tranca/{idTranca}/associarTotem [R1] [E1]  [R3] (Microsserviço Infraestrutura) //No corpo, receberá o id do Totem e a matricula do funcionário que removeu
+        [BACK] GET /funcionario/{matricula} (Microsserviço Pessoa)
+        
+    Passo 5:
+        [BACK] POST /enviarEmail [R2] [E2] (Microsserviço Pessoa)
+               
+
+*UC12 - 
+Retirar Tranca do Sistema de Totens Reparo (fluxo principal)
+    Passos 4-6:
+        [FRONT] PUT /tranca/{idTranca}/removerDoTotem [A2] [E1] (Microsserviço Infraestrutura)
+        
+    Passos 7-9:
+        [FRONT] PUT /tranca/{idTranca}/status [R1] (Microsserviço Infraestrutura) //No corpo, receberá a opção de reparo (status novo da tranca) e a matricula do funcionário que removeu
+        [BACK] GET /funcionario/{matricula} (Microsserviço Pessoa)
+
+    Passo 10:
+        [BACK] POST /enviarEmail [R2] [E2] (Microsserviço Pessoa)
+  
+*UC12 - 
+Retirar Tranca do Sistema de Totens Reparo (fluxo alternativo A1)
+    Passos 2-4:
+        [FRONT] PUT /tranca/{idTranca}/removerDoTotem [A2] [E1] (Microsserviço Infraestrutura)
+        
+    Passos 5-7:
+        [FRONT] PUT /tranca/{idTranca}/status [R1] (Microsserviço Infraestrutura) //No corpo, receberá a opção de reparo (status novo da tranca) e a matricula do funcionário que removeu
+        [BACK] GET /funcionario/{matricula} (Microsserviço Pessoa)
+
+    Passo 8:
+        [BACK] POST /enviarEmail [R2] [E2] (Microsserviço Pessoa)
+     
+
+UC16 - 
+Cobrar Taxas Atrasadas (fluxo principal)
+    Passo 1:
+        [BACK] POST /processarCobrancasNaFila [A2] [E1] (Microsserviço Financeiro)
+
+    Passo 2:
+        [BACK] GET /ciclista/{idCiclista}/cartaoDeCredito  (Microsserviço Pessoa)
+        --[BACK] POST /cobrar (Microsserviço Financeiro) [E1]
+
+    Passo 3:
+        [BACK] POST /enviarEmail (Microsserviço Pessoa)

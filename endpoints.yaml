@@ -143,7 +143,7 @@ paths:
     post:
       tags:
         - Pessoa
-      description: Envia um email para o ciclista para verificação
+      description: Envia email para um ciclista ou funcionário, a ser indicado no corpo da requisição seu id e tipo (ciclista/funcionário), além do assunto e descrição do e-mail
       responses:
         "200":
           description: Email enviado com sucesso
@@ -186,7 +186,8 @@ paths:
                 $ref: "#/components/schemas/DadosInvalidos"
       requestBody:
         $ref: "#/components/requestBodies/FuncionarioRequest"
-  /funcionarios/{matricula}:
+
+  /funcionario/{matricula}:
     put:
       tags:
         - Pessoa
@@ -216,6 +217,7 @@ paths:
                 $ref: "#/components/schemas/DadosInvalidos"
       requestBody:
         $ref: "#/components/requestBodies/FuncionarioRequest"
+
     delete:
       tags:
         - Pessoa
@@ -270,7 +272,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/BicicletaAllResponse"
 
-  /bicicletas/{idBicicleta}:
+  /bicicleta/{idBicicleta}:
     put:
       tags:
         - Infraestrutura
@@ -356,7 +358,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/TrancaAllResponse"
 
-  /trancas/{idTranca}:
+  /tranca/{idTranca}:
     put:
       tags:
         - Infraestrutura
@@ -442,7 +444,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/TotemAllResponse"
 
-  /totens/{idTotem}:
+  /totem/{idTotem}:
     put:
       tags:
         - Infraestrutura
@@ -493,8 +495,136 @@ paths:
         "404":
           description: Totem não encontrado
 
+  /bicicleta/{idBicicleta}/incluirNaRede:
+    put:
+      tags:
+        - Infraestrutura
+      summary: Incluir bicicleta na rede de totens
+      operationId: incluirNaRede
+      parameters:
+        - name: idBicicleta
+          in: path
+          description: Id da bicicleta
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Bicicleta incluída na rede com sucesso
+          content:
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/BicicletaResponse"
+        "402":
+          description: Erro ao enviar o email # fluxo de exceção entra aqui??
+        "404":
+          description: Número de bicicleta inválido # fluxo de exceção
+      requestBody:
+        $ref: "#/components/requestBodies/Bicicleta" # ???
+
+  /bicicleta/{idBicicleta}/removerDaRede:
+    put:
+      tags:
+        - Infraestrutura
+      summary: Remover bicicleta da rede de totens
+      operationId: removerDaRede
+      parameters:
+        - name: idBicicleta
+          in: path
+          description: Id da bicicleta
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Bicicleta removida da rede com sucesso
+          content:
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/BicicletaResponse"
+        "402":
+          description: Erro ao enviar o email # fluxo de exceção entra aqui??
+        "404":
+          description: Número de tranca inválido # fluxo de exceção
+      requestBody:
+        $ref: "#/components/requestBodies/Bicicleta" # ???
+
+  /tranca/{idTranca}/trancar:
+    put:
+      tags:
+        - Infraestrutura
+      summary: Realizar o fechamento de uma tranca
+      operationId: fecharTranca
+      parameters:
+        - name: idTranca
+          in: path
+          description: Id da tranca
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Tranca fechada com sucesso
+          content:
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/TrancaResponse"
+      requestBody:
+        $ref: "#/components/requestBodies/Tranca"
+
+  /tranca/{idTranca}/destrancar:
+    put:
+      tags:
+        - Infraestrutura
+      summary: Realizar a abertura de uma tranca
+      operationId: abrirTranca
+      parameters:
+        - name: idTranca
+          in: path
+          description: Id da tranca
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Tranca aberta com sucesso
+          content:
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/TrancaResponse"
+      requestBody:
+        $ref: "#/components/requestBodies/Tranca"
+
+  /tranca/{idTranca}/associarTotem:
+    put:
+      tags:
+        - Infraestrutura
+      summary: Incluir tranca em totem
+      operationId: associarTotem
+      parameters:
+        - name: idTranca
+          in: path
+          description: Id da tranca
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Tranca incluída com sucesso
+          content:
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/TrancaResponse"
+      requestBody:
+        $ref: "#/components/requestBodies/Tranca"
+
   # FINANCEIRO
-  /validaCartaoCredito:
+  /validarCartaoCredito:
     post:
       tags:
         - Financeiro
@@ -584,7 +714,7 @@ components:
     Passaporte:
       type: object
       properties:
-        numero:
+        id:
           type: string
           example: CS265436
         validade:
@@ -639,13 +769,13 @@ components:
     BicicletaResponse:
       type: object
       required:
-        - numero
+        - id
         - marca
         - modelo
         - ano
         - status
       properties:
-        numero:
+        id:
           type: integer
           format: int64
           example: 12345
@@ -672,13 +802,13 @@ components:
       items:
         type: object
         required:
-          - numero
+          - id
           - marca
           - modelo
           - ano
           - status
         properties:
-          numero:
+          id:
             type: integer
             format: int64
             example: 12345
@@ -722,13 +852,13 @@ components:
     TrancaResponse:
       type: object
       required:
-        - numero
+        - id
         - anoFabricacao
         - modelo
         - status
         - localizacao
       properties:
-        numero:
+        id:
           type: integer
           format: int64
           example: 12345
@@ -752,11 +882,12 @@ components:
       items:
         type: object
         required:
+          - id
           - anoFabricacao
           - modelo
           - status
         properties:
-          numero:
+          id:
             type: integer
             format: int64
             example: 12345
@@ -792,11 +923,11 @@ components:
     TotemResponse:
       type: object
       required:
-        - numero
+        - id
         - localizacao
         - descricao
       properties:
-        numero:
+        id:
           type: integer
           format: int64
           example: 1
@@ -813,11 +944,11 @@ components:
       items:
         type: object
         required:
-          - numero
+          - id
           - localizacao
           - descricao
         properties:
-          numero:
+          id:
             type: integer
             format: int64
             example: 1
@@ -898,14 +1029,17 @@ components:
     EnviaEmail:
       type: object
       required:
-        - email
+        - id
+        - tipoPessoa
         - assunto
         - descricao
       properties:
-        email:
+        id:
+          type: integer
+          example: 1
+        tipoPessoa:
           type: string
-          format: email
-          example: guilherme@gmail.com
+          example: "Ciclista"
         assunto:
           type: string
           example: "Assunto do email"
