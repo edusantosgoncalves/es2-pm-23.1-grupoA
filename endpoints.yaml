@@ -16,7 +16,7 @@ tags:
     description: Gerenciamento de cobranças
 paths:
   # PESSOA
-  /ciclistas:
+  /ciclista:
     post:
       tags:
         - Pessoa
@@ -37,7 +37,8 @@ paths:
                 $ref: "#/components/schemas/DadosInvalidos"
       requestBody:
         $ref: "#/components/requestBodies/Ciclista"
-  /ciclistas/{idCiclista}:
+
+  /ciclista/{idCiclista}:
     put:
       tags:
         - Pessoa
@@ -68,7 +69,31 @@ paths:
                 $ref: "#/components/schemas/DadosInvalidos"
       requestBody:
         $ref: "#/components/requestBodies/Ciclista"
-  /ciclistas/existeEmail/{email}:
+
+    get:
+      tags:
+        - Pessoa
+      summary: Obtem um ciclista com o id fornecido.
+      operationId: getCiclista
+      parameters:
+        - name: idCiclista
+          in: path
+          description: Id do ciclista
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Ciclista obtido com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CiclistaResponse"
+        "404":
+          description: Ciclista não encontrado
+
+  /ciclista/existeEmail/{email}:
     get:
       tags:
         - Pessoa
@@ -88,7 +113,8 @@ paths:
               schema:
                 type: boolean
                 example: true
-  /ciclistas/{idCiclista}/cartaoDeCredito:
+
+  /ciclista/{idCiclista}/cartaoDeCredito:
     put:
       tags:
         - Pessoa
@@ -115,7 +141,8 @@ paths:
                 $ref: "#/components/schemas/DadosInvalidos"
       requestBody:
         $ref: "#/components/requestBodies/CartaoCredito"
-  /ciclistas/{idCiclista}/ativar:
+
+  /ciclista/{idCiclista}/ativar:
     post:
       tags:
         - Pessoa
@@ -139,6 +166,7 @@ paths:
                 example: true
         "400":
           description: Solicitação inválida. Os dados não correspondem a um registro pendente.
+
   /enviarEmail:
     post:
       tags:
@@ -151,7 +179,8 @@ paths:
           description: Erro ao enviar email
       requestBody:
         $ref: "#/components/requestBodies/EnviaEmail"
-  /funcionarios:
+
+  /funcionario:
     get:
       tags:
         - Pessoa
@@ -188,6 +217,29 @@ paths:
         $ref: "#/components/requestBodies/FuncionarioRequest"
 
   /funcionario/{matricula}:
+    get:
+      tags:
+        - Pessoa
+      description: Retorna o funcionário com a matricula informada.
+      parameters:
+        - name: matricula
+          in: path
+          description: Matrícula do funcionario
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Funcionário retornado.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/FuncionariosResponse"
+        "404":
+          description: Funcionário não encontrado.
     put:
       tags:
         - Pessoa
@@ -217,7 +269,6 @@ paths:
                 $ref: "#/components/schemas/DadosInvalidos"
       requestBody:
         $ref: "#/components/requestBodies/FuncionarioRequest"
-
     delete:
       tags:
         - Pessoa
@@ -237,7 +288,7 @@ paths:
           description: Funcionário não encontrado
 
   # INFRAESTRUTURA
-  /bicicletas:
+  /bicicleta:
     post:
       tags:
         - Infraestrutura
@@ -323,93 +374,94 @@ paths:
         "404":
           description: Bicicleta não encontrada
 
-  /trancas:
-    post:
-      tags:
-        - Infraestrutura
-      summary: Adicionar uma nova tranca
-      operationId: addTranca
-      responses:
-        "201":
-          description: Tranca cadastrada com sucesso
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/TrancaResponse"
-        "422":
-          description: Dados inválidos
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/DadosInvalidos"
-      requestBody:
-        $ref: "#/components/requestBodies/Tranca"
-
-    get:
-      tags:
-        - Infraestrutura
-      summary: Retornar todas as trancas existentes
-      operationId: getTrancas
-      responses:
-        "200":
-          description: Trancas retornadas com sucesso
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/TrancaAllResponse"
-
-  /tranca/{idTranca}:
+  /bicicleta/{idBicicleta}/incluirNaRede:
     put:
       tags:
         - Infraestrutura
-      summary: Atualizar dados de uma tranca existente
-      operationId: updateTranca
+      summary: Incluir bicicleta na rede de totens
+      operationId: incluirNaRede
       parameters:
-        - name: idTranca
+        - name: idBicicleta
           in: path
-          description: Id da tranca
+          description: Id da bicicleta
           required: true
           schema:
             type: integer
             format: int64
       responses:
         "200":
-          description: Tranca atualizada com sucesso
+          description: Bicicleta incluída na rede com sucesso
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/TrancaResponse"
+                $ref: "#/components/schemas/BicicletaResponse"
+        "402":
+          description: Erro ao enviar o email # fluxo de exceção entra aqui??
         "404":
-          description: Tranca não encontrada
-        "422":
-          description: Dados inválidos
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/DadosInvalidos"
+          description: Número de bicicleta inválido # fluxo de exceção
       requestBody:
-        $ref: "#/components/requestBodies/Tranca"
+        $ref: "#/components/requestBodies/Bicicleta" # ???
 
-    delete:
+  /bicicleta/{idBicicleta}/removerDaRede:
+    put:
       tags:
         - Infraestrutura
-      summary: Remover uma tranca existente
-      operationId: removeTranca
+      summary: Remover bicicleta da rede de totens
+      operationId: removerDaRede
       parameters:
-        - name: idTranca
+        - name: idBicicleta
           in: path
-          description: Id da tranca
+          description: Id da bicicleta
           required: true
           schema:
             type: integer
             format: int64
       responses:
         "200":
-          description: Tranca removida com sucesso
+          description: Bicicleta removida da rede com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BicicletaResponse"
+        "402":
+          description: Erro ao enviar o email # fluxo de exceção entra aqui??
         "404":
-          description: Tranca não encontrada
+          description: Número de tranca inválido # fluxo de exceção
+      requestBody:
+        $ref: "#/components/requestBodies/Bicicleta" # ???
 
-  /totens:
+  /bicicleta/{idBicicleta}/status:
+    put:
+      tags:
+        - Infraestrutura
+      summary: Atualizar status da bicicleta fornecida.
+      operationId: updateBicicletaStatus
+      parameters:
+        - name: idBicicleta
+          in: path
+          description: Id da bicicleta
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Status da bicicleta atualizado com sucesso.
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "EM USO"
+        "404":
+          description: Bicicleta não encontrada
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: string
+              example: "EM USO"
+
+  /totem:
     post:
       tags:
         - Infraestrutura
@@ -495,67 +547,98 @@ paths:
         "404":
           description: Totem não encontrado
 
-  /bicicleta/{idBicicleta}/incluirNaRede:
-    put:
+  /tranca:
+    post:
       tags:
         - Infraestrutura
-      summary: Incluir bicicleta na rede de totens
-      operationId: incluirNaRede
-      parameters:
-        - name: idBicicleta
-          in: path
-          description: Id da bicicleta
-          required: true
-          schema:
-            type: integer
-            format: int64
+      summary: Adicionar uma nova tranca
+      operationId: addTranca
       responses:
-        "200":
-          description: Bicicleta incluída na rede com sucesso
+        "201":
+          description: Tranca cadastrada com sucesso
           content:
             application/json:
-              schema: 
-                $ref: "#/components/schemas/BicicletaResponse"
-        "402":
-          description: Erro ao enviar o email # fluxo de exceção entra aqui??
-        "404":
-          description: Número de bicicleta inválido # fluxo de exceção
+              schema:
+                $ref: "#/components/schemas/TrancaResponse"
+        "422":
+          description: Dados inválidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DadosInvalidos"
       requestBody:
-        $ref: "#/components/requestBodies/Bicicleta" # ???
+        $ref: "#/components/requestBodies/Tranca"
 
-  /bicicleta/{idBicicleta}/removerDaRede:
+    get:
+      tags:
+        - Infraestrutura
+      summary: Retornar todas as trancas existentes
+      operationId: getTrancas
+      responses:
+        "200":
+          description: Trancas retornadas com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TrancaAllResponse"
+
+  /tranca/{idTranca}:
     put:
       tags:
         - Infraestrutura
-      summary: Remover bicicleta da rede de totens
-      operationId: removerDaRede
+      summary: Atualizar dados de uma tranca existente
+      operationId: updateTranca
       parameters:
-        - name: idBicicleta
+        - name: idTranca
           in: path
-          description: Id da bicicleta
+          description: Id da tranca
           required: true
           schema:
             type: integer
             format: int64
       responses:
         "200":
-          description: Bicicleta removida da rede com sucesso
+          description: Tranca atualizada com sucesso
           content:
             application/json:
-              schema: 
-                $ref: "#/components/schemas/BicicletaResponse"
-        "402":
-          description: Erro ao enviar o email # fluxo de exceção entra aqui??
+              schema:
+                $ref: "#/components/schemas/TrancaResponse"
         "404":
-          description: Número de tranca inválido # fluxo de exceção
+          description: Tranca não encontrada
+        "422":
+          description: Dados inválidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DadosInvalidos"
       requestBody:
-        $ref: "#/components/requestBodies/Bicicleta" # ???
+        $ref: "#/components/requestBodies/Tranca"
+
+    delete:
+      tags:
+        - Infraestrutura
+      summary: Remover uma tranca existente
+      operationId: removeTranca
+      parameters:
+        - name: idTranca
+          in: path
+          description: Id da tranca
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Tranca removida com sucesso
+        "404":
+          description: Tranca não encontrada
 
   /tranca/{idTranca}/trancar:
     put:
       tags:
         - Infraestrutura
-      summary: Realizar o fechamento de uma tranca
+      summary: Realizar o fechamento de uma tranca.
+      description: Muda o status da tranca para "LIVRE"
       operationId: fecharTranca
       parameters:
         - name: idTranca
@@ -570,16 +653,17 @@ paths:
           description: Tranca fechada com sucesso
           content:
             application/json:
-              schema: 
+              schema:
                 $ref: "#/components/schemas/TrancaResponse"
-      requestBody:
-        $ref: "#/components/requestBodies/Tranca"
+        "404":
+          description: Bicicleta não encontrada
 
-  /tranca/{idTranca}/destrancar:
+  /tranca/{idTranca}/liberar:
     put:
       tags:
         - Infraestrutura
       summary: Realizar a abertura de uma tranca
+      description: Muda o status da tranca para "OCUPADA"
       operationId: abrirTranca
       parameters:
         - name: idTranca
@@ -594,10 +678,10 @@ paths:
           description: Tranca aberta com sucesso
           content:
             application/json:
-              schema: 
+              schema:
                 $ref: "#/components/schemas/TrancaResponse"
-      requestBody:
-        $ref: "#/components/requestBodies/Tranca"
+        "404":
+          description: Tranca não encontrada
 
   /tranca/{idTranca}/associarTotem:
     put:
@@ -618,12 +702,198 @@ paths:
           description: Tranca incluída com sucesso
           content:
             application/json:
-              schema: 
+              schema:
                 $ref: "#/components/schemas/TrancaResponse"
       requestBody:
         $ref: "#/components/requestBodies/Tranca"
 
+  /tranca/{idTranca}/estaLivre:
+    get:
+      tags:
+        - Infraestrutura
+      summary: Retorna se a tranca está livre
+      operationId: isTotemFree
+      parameters:
+        - name: idTranca
+          in: path
+          description: Id da tranca
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Status da tranca retornado.
+          content:
+            application/json:
+              schema:
+                type: boolean
+                example: true
+        "404":
+          description: Totem não encontrado
+
+  /tranca/{idTranca}/bicicleta:
+    get:
+      tags:
+        - Infraestrutura
+      summary: Retorna a bicicleta associada a tranca
+      operationId: getBicicletaTotem
+      parameters:
+        - name: idTranca
+          in: path
+          description: Id da tranca
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Bicicleta associada a tranca retornada.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BicicletaResponse"
+        "400":
+          description: Não há bicicleta associada a tranca.
+        "404":
+          description: Tranca não encontrada
+
   # FINANCEIRO
+
+  /aluguel/{idCiclista}/podeAlugar:
+    get:
+      tags:
+        - Financeiro
+      summary: Retorna se o ciclista pode ou não fazer um aluguel.
+      description: Verifica se o ciclista possui um aluguel ativo ou não.
+      parameters:
+        - name: idCiclista
+          in: path
+          description: Id do ciclista
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Retorna um booleano se o ciclista pode ou não alugar
+          content:
+            application/json:
+              schema:
+                type: boolean
+                example: true
+
+  /aluguel/{idBicicleta}/ativo:
+    get:
+      tags:
+        - Financeiro
+      summary: Retorna dados de um aluguel ativo a partir do id da bicicleta registrado no aluguel.
+      description: Verifica se existe um aluguel ativo com a bicicleta descrita.
+      parameters:
+        - name: idBicicleta
+          in: path
+          description: Id da bicicleta
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Retorna o aluguel ativo.
+          content:
+            application/json:
+              schema:
+                type: boolean
+                example: true
+        "400":
+          description: Não há aluguel ativo com esta bicicleta.
+
+  /cobrar:
+    post:
+      tags:
+        - Financeiro
+      description: Efetua uma cobrança.
+      responses:
+        "200":
+          description: Cobranca registrada com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CobrancaResponse"
+        "400":
+          description: Erro ao efetuar cobrança!
+        "422":
+          description: Dados inválidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DadosInvalidos"
+      requestBody:
+        $ref: "#/components/requestBodies/Cobranca"
+
+  /efetuarAluguel:
+    post:
+      tags:
+        - Financeiro
+      description: Efetua o aluguel de determinada bicicleta a um ciclista
+      responses:
+        "200":
+          description: Aluguel efetuado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AluguelResponse"
+        "404":
+          description: Dado não encontrado (ciclista, bicicleta, tranca)
+        "422":
+          description: Dados inválidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DadosInvalidos"
+      requestBody:
+        $ref: "#/components/requestBodies/Aluguel"
+
+  /efetuarDevolucao:
+    post:
+      tags:
+        - Financeiro
+      description: Efetua a devolução de uma de determinada bicicleta a uma tranca
+      responses:
+        "200":
+          description: Devolução efetuada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DevolucaoResponse"
+        "404":
+          description: Dado não encontrado (bicicleta, tranca)
+        "422":
+          description: Dados inválidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DadosInvalidos"
+      requestBody:
+        $ref: "#/components/requestBodies/Devolucao"
+
+  /registrarCobrancaEmFila:
+    post:
+      tags:
+        - Financeiro
+      description: Registra uma cobrança em fila para ser processada posteriormente.
+      responses:
+        "200":
+          description: Cobranca registrada em fila com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CobrancaFilaResponse"
+        "400":
+          description: Erro ao efetuar cobrança!
+      requestBody:
+        $ref: "#/components/requestBodies/Cobranca"
+
   /validarCartaoCredito:
     post:
       tags:
@@ -1048,6 +1318,136 @@ components:
           example: "Corpo do email"
       xml:
         name: Totem
+    AluguelResponse:
+      type: object
+      required:
+        - id
+        - dataRetirada
+        - tranca
+        - bicicleta
+        - ciclista
+      properties:
+        id:
+          type: integer
+          example: 1
+        dataRetirada:
+          type: string
+          format: date-time
+        tranca:
+          type: integer
+          example: 1
+        bicicleta:
+          type: integer
+          example: 1
+        ciclista:
+          type: integer
+          example: 1
+      xml:
+        name: AluguelResponse
+    Aluguel:
+      type: object
+      required:
+        - tranca
+        - ciclista
+      properties:
+        tranca:
+          type: integer
+          example: 1
+        ciclista:
+          type: integer
+          example: 1
+      xml:
+        name: Aluguel
+    Cobranca:
+      type: object
+      required:
+        - valor
+        - cartaoCredito
+      properties:
+        tranca:
+          type: integer
+          example: 1
+        cartaoCredito:
+          $ref: "#/components/schemas/CartaoCredito"
+      xml:
+        name: Cobranca
+    CobrancaResponse:
+      type: object
+      required:
+        - id
+        - data
+        - valor
+      properties:
+        id:
+          type: integer
+          example: 1
+        data:
+          type: string
+          format: date-time
+        valor:
+          type: number
+          example: 10.0
+      xml:
+        name: CobrancaResponse
+    CobrancaFilaResponse:
+      type: object
+      required:
+        - id
+        - data
+        - valor
+      properties:
+        id:
+          type: integer
+          example: 1
+        data:
+          type: string
+          format: date-time
+        valor:
+          type: number
+          example: 10.0
+      xml:
+        name: CobrancaFilaResponse
+    DevolucaoResponse:
+      type: object
+      required:
+        - id
+        - dataDevolucao
+        - tranca
+        - bicicleta
+        - ciclista
+      properties:
+        id:
+          type: integer
+          example: 1
+        dataDevolucao:
+          type: string
+          format: date-time
+        tranca:
+          type: integer
+          example: 1
+        bicicleta:
+          type: integer
+          example: 1
+        ciclista:
+          type: integer
+          example: 1
+      xml:
+        name: DevolucaoResponse
+    Devolucao:
+      type: object
+      required:
+        - tranca
+        - bicicleta
+      properties:
+        tranca:
+          type: integer
+          example: 1
+        bicicleta:
+          type: integer
+          example: 1
+      xml:
+        name: Devolucao
+
   requestBodies:
     Ciclista:
       content:
@@ -1117,3 +1517,35 @@ components:
         application/xml:
           schema:
             $ref: "#/components/schemas/EnviaEmail"
+    AluguelResponse:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/AluguelResponse"
+        application/xml:
+          schema:
+            $ref: "#/components/schemas/AluguelResponse"
+    Aluguel:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Aluguel"
+        application/xml:
+          schema:
+            $ref: "#/components/schemas/Aluguel"
+    Cobranca:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Cobranca"
+        application/xml:
+          schema:
+            $ref: "#/components/schemas/Cobranca"
+    Devolucao:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Devolucao"
+        application/xml:
+          schema:
+            $ref: "#/components/schemas/Devolucao"
