@@ -34,7 +34,7 @@ Alugar Bicicleta (fluxo exceção E1)
 UC03 – 
 Alugar Bicicleta (fluxo exceção E3)
     Passo 1: 
-        [BACK] POST /registrarCobrancaEmFila (Microsserviço Pessoa)
+        [BACK] POST /registrarCobrancaEmFila (Microsserviço Financeiro)
 
 
 UC04 – 
