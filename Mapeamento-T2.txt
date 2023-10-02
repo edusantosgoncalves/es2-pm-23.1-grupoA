@@ -70,7 +70,7 @@ Devolver bicicleta (fluxo alternativo A2)
 UC04 - 
 Devolver bicicleta (fluxo alternativo A3)
     Passos 1-2:
-        [FRONT] PUT /bicicleta/{idBicicleta}/reparar (Microsserviço Infraestrutura)
+        [FRONT] PUT /bicicleta/{idBicicleta}/status (Microsserviço Infraestrutura)
 
 *UC08 - 
 Incluir Bicicleta na Rede de Totens (fluxo principal)
