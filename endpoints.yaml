@@ -396,11 +396,11 @@ paths:
               schema:
                 $ref: "#/components/schemas/BicicletaResponse"
         "402":
-          description: Erro ao enviar o email # fluxo de exceção entra aqui??
+          description: Erro ao enviar o email
         "404":
-          description: Número de bicicleta inválido # fluxo de exceção
+          description: Número de bicicleta inválido
       requestBody:
-        $ref: "#/components/requestBodies/Bicicleta" # ???
+        $ref: "#/components/requestBodies/Bicicleta"
 
   /bicicleta/{idBicicleta}/removerDaRede:
     put:
@@ -424,11 +424,11 @@ paths:
               schema:
                 $ref: "#/components/schemas/BicicletaResponse"
         "402":
-          description: Erro ao enviar o email # fluxo de exceção entra aqui??
+          description: Erro ao enviar o email
         "404":
-          description: Número de tranca inválido # fluxo de exceção
+          description: Número de tranca inválido
       requestBody:
-        $ref: "#/components/requestBodies/Bicicleta" # ???
+        $ref: "#/components/requestBodies/Bicicleta"
 
   /bicicleta/{idBicicleta}/status:
     put:
