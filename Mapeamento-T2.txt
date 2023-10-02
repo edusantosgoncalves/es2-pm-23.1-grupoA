@@ -21,7 +21,7 @@ Alugar Bicicleta (fluxo principal)
         [BACK] PUT /bicicleta/{idBicicleta}/status (Microsserviço Infraestrutura) 
         
     Passo 10:
-        [BACK] PUT /tranca/{idTranca}/liberar (Microsserviço Infraestrutura) 
+        [BACK] PUT /tranca/{idTranca}/status (Microsserviço Infraestrutura) 
         
     Passo 11:
         [BACK] POST /enviarEmail (Microsserviço Pessoa) [R4] 
@@ -50,7 +50,7 @@ Devolver bicicleta (fluxo principal)
         [BACK] PUT /bicicleta/{idBicicleta}/status (Microsserviço Infraestrutura)
 
     Passo 6:
-        [BACK] PUT /tranca/{idTranca}/travar (Microsserviço Infraestrutura)
+        [BACK] PUT /tranca/{idTranca}/status (Microsserviço Infraestrutura)
 
     Passo 7:
         [BACK] POST /enviarEmail (Microsserviço Pessoa) [R3] 
@@ -78,7 +78,7 @@ Incluir Bicicleta na Rede de Totens (fluxo principal)
         [FRONT] PUT /bicicleta/{idBicicleta}/incluirNaRede [E1] [E3] (Microsserviço Infraestrutura) //No corpo, receberá o id da tranca ao qual se associará 
 
     Passo 4:
-        --[BACK] PUT /tranca/{idTranca}/travar (Microsserviço Infraestrutura)
+        --[BACK] PUT /tranca/{idTranca}/status (Microsserviço Infraestrutura)
         
     Passo 6:
         [BACK] POST /enviarEmail (Microsserviço Pessoa) [E2]
@@ -87,7 +87,7 @@ Incluir Bicicleta na Rede de Totens (fluxo principal)
 *UC09 - 
 Retirar Bicicleta do Sistema de Totens para Reparo (fluxo principal)
     Passos 4-6:
-        [FRONT] PUT /tranca/{idTranca}/liberar [A2] [E1] (Microsserviço Infraestrutura)
+        [FRONT] PUT /tranca/{idTranca}/status [A2] [E1] (Microsserviço Infraestrutura)
         
     Passos 7-9:
         [FRONT] PUT /bicicleta/{idBicicleta}/removerDaRede [R1] [E3] (Microsserviço Infraestrutura) //No corpo, receberá a opção de reparo (status novo da bicicleta)
@@ -98,7 +98,7 @@ Retirar Bicicleta do Sistema de Totens para Reparo (fluxo principal)
 *UC09 - 
 Retirar Bicicleta do Sistema de Totens para Reparo (fluxo alternativo A1)
     Passos 2-4:
-        [FRONT] PUT /tranca/{idTranca}/liberar [A2] [E1] (Microsserviço Infraestrutura)
+        [FRONT] PUT /tranca/{idTranca}/status [A2] [E1] (Microsserviço Infraestrutura)
         
     Passos 5-7:
         [FRONT] PUT /bicicleta/{idBicicleta}/removerDaRede [R1] [E3] (Microsserviço Infraestrutura) //No corpo, receberá a opção de reparo (status novo da bicicleta)
@@ -120,10 +120,10 @@ Incluir Tranca em Totem (fluxo principal)
 *UC12 - 
 Retirar Tranca do Sistema de Totens Reparo (fluxo principal)
     Passos 4-6:
-        [FRONT] PUT /tranca/{idTranca}/removerDoTotem [A2] [E1] (Microsserviço Infraestrutura)
+        [FRONT] PUT /tranca/{idTranca}/status [A2] [E1] (Microsserviço Infraestrutura)
         
     Passos 7-9:
-        [FRONT] PUT /tranca/{idTranca}/status [R1] (Microsserviço Infraestrutura) //No corpo, receberá a opção de reparo (status novo da tranca) e a matricula do funcionário que removeu
+        [FRONT] PUT /tranca/{idTranca}/removerDoTotem [R1] (Microsserviço Infraestrutura) //No corpo, receberá a opção de reparo (status novo da tranca) e a matricula do funcionário que removeu
         [BACK] GET /funcionario/{matricula} (Microsserviço Pessoa)
 
     Passo 10:
@@ -132,10 +132,10 @@ Retirar Tranca do Sistema de Totens Reparo (fluxo principal)
 *UC12 - 
 Retirar Tranca do Sistema de Totens Reparo (fluxo alternativo A1)
     Passos 2-4:
-        [FRONT] PUT /tranca/{idTranca}/removerDoTotem [A2] [E1] (Microsserviço Infraestrutura)
+        [FRONT] PUT /tranca/{idTranca}/status [A2] [E1] (Microsserviço Infraestrutura)
         
     Passos 5-7:
-        [FRONT] PUT /tranca/{idTranca}/status [R1] (Microsserviço Infraestrutura) //No corpo, receberá a opção de reparo (status novo da tranca) e a matricula do funcionário que removeu
+        [FRONT] PUT /tranca/{idTranca}/removerDoTotem [R1] (Microsserviço Infraestrutura) //No corpo, receberá a opção de reparo (status novo da tranca) e a matricula do funcionário que removeu
         [BACK] GET /funcionario/{matricula} (Microsserviço Pessoa)
 
     Passo 8:
