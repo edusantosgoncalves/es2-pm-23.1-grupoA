@@ -75,33 +75,40 @@ Devolver bicicleta (fluxo alternativo A3)
 *UC08 - 
 Incluir Bicicleta na Rede de Totens (fluxo principal)
     Passos 2-3:
-        [FRONT] PUT /bicicleta/{idBicicleta}/incluirNaRede [E1] [E3] (Microsserviço Infraestrutura) //No corpo, receberá o id da tranca ao qual se associará 
+        [FRONT] PUT /bicicleta/{idBicicleta}/incluirNaRede [E1] [E3] (Microsserviço Infraestrutura) //No corpo, receberá o id da tranca ao qual se associará, assim como o id do funcionario
 
     Passo 4:
         --[BACK] PUT /tranca/{idTranca}/status (Microsserviço Infraestrutura)
         
     Passo 6:
+        [BACK] GET /funcionario/{matricula} (Microsserviço Pessoa)
         [BACK] POST /enviarEmail (Microsserviço Pessoa) [E2]
 
 
 *UC09 - 
 Retirar Bicicleta do Sistema de Totens para Reparo (fluxo principal)
-    Passos 4-6:
-        [FRONT] PUT /tranca/{idTranca}/status [A2] [E1] (Microsserviço Infraestrutura)
+    Passo 4:
+        [FRONT] PUT /bicicleta/{idBicicleta}/removerDaRede [R1] [E3] (Microsserviço Infraestrutura) //No corpo, receberá a opção de reparo (status novo da bicicleta), assim como o id do funcionario
         
-    Passos 7-9:
-        [FRONT] PUT /bicicleta/{idBicicleta}/removerDaRede [R1] [E3] (Microsserviço Infraestrutura) //No corpo, receberá a opção de reparo (status novo da bicicleta)
+    Passo 6:
+        --[BACK] PUT /tranca/{idTranca}/status [A2] [E1] (Microsserviço Infraestrutura)
+
+    Passo 9:
+        [BACK] GET /funcionario/{matricula} (Microsserviço Pessoa)
 
     Passo 10:
         [BACK] POST /enviarEmail [R2] [E2] (Microsserviço Pessoa)
      
 *UC09 - 
 Retirar Bicicleta do Sistema de Totens para Reparo (fluxo alternativo A1)
-    Passos 2-4:
-        [FRONT] PUT /tranca/{idTranca}/status [A2] [E1] (Microsserviço Infraestrutura)
+    Passo 2:
+        [FRONT] PUT /bicicleta/{idBicicleta}/removerDaRede [R1] [E3] (Microsserviço Infraestrutura) //No corpo, receberá a opção de reparo (status novo da bicicleta), assim como o id do funcionario
         
-    Passos 5-7:
-        [FRONT] PUT /bicicleta/{idBicicleta}/removerDaRede [R1] [E3] (Microsserviço Infraestrutura) //No corpo, receberá a opção de reparo (status novo da bicicleta)
+    Passo 4:
+       --[BACK] PUT /tranca/{idTranca}/status [A2] [E1] (Microsserviço Infraestrutura)
+
+    Passo 7:
+        [BACK] GET /funcionario/{matricula} (Microsserviço Pessoa)
 
     Passo 8:
         [BACK] POST /enviarEmail [R2] [E2] (Microsserviço Pessoa)
@@ -109,21 +116,22 @@ Retirar Bicicleta do Sistema de Totens para Reparo (fluxo alternativo A1)
 
 *UC11 - 
 Incluir Tranca em Totem (fluxo principal)
-    Passos 2-4:
+    Passo 2:
         [FRONT] PUT /tranca/{idTranca}/associarTotem [R1] [E1]  [R3] (Microsserviço Infraestrutura) //No corpo, receberá o id do Totem e a matricula do funcionário que removeu
+
+    Passo 3:
         [BACK] GET /funcionario/{matricula} (Microsserviço Pessoa)
-        
+
     Passo 5:
         [BACK] POST /enviarEmail [R2] [E2] (Microsserviço Pessoa)
                
 
 *UC12 - 
 Retirar Tranca do Sistema de Totens Reparo (fluxo principal)
-    Passos 4-6:
-        [FRONT] PUT /tranca/{idTranca}/status [A2] [E1] (Microsserviço Infraestrutura)
-        
-    Passos 7-9:
+    Passo 4:
         [FRONT] PUT /tranca/{idTranca}/removerDoTotem [R1] (Microsserviço Infraestrutura) //No corpo, receberá a opção de reparo (status novo da tranca) e a matricula do funcionário que removeu
+        
+    Passo 9:
         [BACK] GET /funcionario/{matricula} (Microsserviço Pessoa)
 
     Passo 10:
@@ -131,11 +139,10 @@ Retirar Tranca do Sistema de Totens Reparo (fluxo principal)
   
 *UC12 - 
 Retirar Tranca do Sistema de Totens Reparo (fluxo alternativo A1)
-    Passos 2-4:
-        [FRONT] PUT /tranca/{idTranca}/status [A2] [E1] (Microsserviço Infraestrutura)
-        
-    Passos 5-7:
+    Passo 2:
         [FRONT] PUT /tranca/{idTranca}/removerDoTotem [R1] (Microsserviço Infraestrutura) //No corpo, receberá a opção de reparo (status novo da tranca) e a matricula do funcionário que removeu
+
+    Passo 7:
         [BACK] GET /funcionario/{matricula} (Microsserviço Pessoa)
 
     Passo 8:
