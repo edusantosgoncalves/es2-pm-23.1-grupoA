@@ -5,7 +5,7 @@ UC03 –
 Alugar Bicicleta (fluxo principal)
     Passo 3: 
         [FRONT] POST /efetuarAluguel (Microsserviço Financeiro) [R3]
-        [BACK] GET /tranca/{idTranca}/estaLivre (Microsserviço Infraestrutura) [A1] [E5]
+        [BACK] GET /tranca/{idTranca}/status (Microsserviço Infraestrutura) [A1] [E5]
 
     Passo 4:
         [BACK] GET /tranca/{idTranca}/bicicleta (Microsserviço Infraestrutura) [E2] [E4]
