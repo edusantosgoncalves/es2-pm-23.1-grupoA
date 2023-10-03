@@ -817,8 +817,7 @@ paths:
         content:
           application/json:
             schema:
-              type: string
-              example: "EM REPARO"
+              $ref: "#/components/schemas/StatusTranca"
               
   # FINANCEIRO
   /aluguel/{idCiclista}/podeAlugar:
@@ -1298,6 +1297,13 @@ components:
             example: Modelo de Tranca
         xml:
           name: TrancaAllResponse
+    StatusTranca:
+      type: string
+      enum:
+        - LIVRE
+        - OCUPADA
+        - EM_REPARO
+        - APOSENTADA
     Totem:
       type: object
       required:
