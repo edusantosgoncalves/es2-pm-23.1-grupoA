@@ -1304,6 +1304,8 @@ components:
         - OCUPADA
         - EM_REPARO
         - APOSENTADA
+      xml:
+        name: StatusTranca
     Totem:
       type: object
       required:
