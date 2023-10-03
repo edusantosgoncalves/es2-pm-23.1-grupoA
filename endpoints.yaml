@@ -396,11 +396,11 @@ paths:
               schema:
                 $ref: "#/components/schemas/BicicletaResponse"
         "402":
-          description: Erro ao enviar o email
+          description: Erro ao enviar o email # fluxo de exceção entra aqui??
         "404":
-          description: Número de bicicleta inválido
+          description: Número de bicicleta inválido # fluxo de exceção
       requestBody:
-        $ref: "#/components/requestBodies/Bicicleta"
+        $ref: "#/components/requestBodies/InclusaoDeBicicleta" # ???
 
   /bicicleta/{idBicicleta}/removerDaRede:
     put:
@@ -424,11 +424,11 @@ paths:
               schema:
                 $ref: "#/components/schemas/BicicletaResponse"
         "402":
-          description: Erro ao enviar o email
+          description: Erro ao enviar o email # fluxo de exceção entra aqui??
         "404":
-          description: Número de tranca inválido
+          description: Número de tranca inválido # fluxo de exceção
       requestBody:
-        $ref: "#/components/requestBodies/Bicicleta"
+        $ref: "#/components/requestBodies/ExclusaoDeBicicleta" # ???
 
   /bicicleta/{idBicicleta}/status:
     put:
@@ -450,10 +450,15 @@ paths:
           content:
             application/json:
               schema:
-                type: string
-                example: "EM USO"
+                $ref: "#/components/schemas/BicicletaResponse"
         "404":
           description: Bicicleta não encontrada
+        "422":
+          description: Dados inválidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DadosInvalidos"
       requestBody:
         content:
           application/json:
@@ -758,8 +763,64 @@ paths:
         "404":
           description: Tranca não encontrada
 
+  /tranca/{idTranca}/removerDoTotem:
+    put:
+      tags:
+        - Infraestrutura
+      summary: Remove a tranca do totem
+      operationId: removerDoTotem
+      parameters: 
+        - name: idTranca
+          in: path
+          description: Id da tranca
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Tranca removida do totem com sucesso
+        "404":
+          description: Tranca não encontrada
+  
+  /tranca/{idTranca}/status:
+    put:
+      tags:
+        - Infraestrutura
+      summary: Atualiza o status da tranca
+      description: Muda o status da tranca para "reparo"
+      operationId: atualizarStatus
+      parameters: 
+        - name: idTranca
+          in: path
+          description: Id da tranca
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Status da tranca atualizado com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TrancaResponse"
+        "404":
+          description: Tranca não encontrada
+        "422":
+          description: Dados inválidos
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DadosInvalidos"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: string
+              example: "EM REPARO"
+              
   # FINANCEIRO
-
   /aluguel/{idCiclista}/podeAlugar:
     get:
       tags:
@@ -1036,6 +1097,67 @@ components:
           example: nova
       xml:
         name: Bicicleta
+    InclusaoDeBicicleta:
+      type: object
+      required:
+        - marca
+        - modelo
+        - ano
+        - status
+        - idTranca
+        - matriculaFuncionario
+      properties:
+        marca:
+          type: string
+          example: Merida
+        modelo:
+          type: string
+          example: Modelo1
+        ano:
+          type: string
+          format: date
+          example: 2019
+        status:
+          type: string
+          example: nova
+        idTranca:
+          type: integer
+          format: int64
+          example: 12345
+        matriculaFuncionario:
+          type: integer
+          format: int64
+          example: 1
+      xml:
+        name: InclusaoDeBicicleta
+    ExclusaoDeBicicleta:
+      type: object
+      required:
+        - marca
+        - modelo
+        - ano
+        - status
+        - matriculaFuncionario
+      properties:
+        marca:
+          type: string
+          example: Merida
+        modelo:
+          type: string
+          example: Modelo1
+        ano:
+          type: string
+          format: date
+          example: 2019
+        status:
+          type: string
+          example: nova
+        matriculaFuncionario:
+          type: integer
+          format: int64
+          example: 1
+      xml:
+        name: ExclusaoDeBicicleta
     BicicletaResponse:
       type: object
       required:
@@ -1061,7 +1183,7 @@ components:
           example: 2019
         status:
           type: string
-          example: nova
+          example: NOVA
         localizacao:
           type: string
           example: Rio de Janeiro, RJ
@@ -1134,7 +1256,7 @@ components:
           example: 12345
         status:
           type: string
-          example: nova
+          example: NOVA
         localizacao:
           type: string
           example: Rio de Janeiro, RJ
@@ -1326,6 +1448,7 @@ components:
         - tranca
         - bicicleta
         - ciclista
+        - cobranca
       properties:
         id:
           type: integer
@@ -1340,6 +1463,9 @@ components:
           type: integer
           example: 1
         ciclista:
+          type: integer
+          example: 1
+        cobranca:
           type: integer
           example: 1
       xml:
@@ -1364,9 +1490,9 @@ components:
         - valor
         - cartaoCredito
       properties:
-        tranca:
-          type: integer
-          example: 1
+        valor:
+          type: number
+          example: 10
         cartaoCredito:
           $ref: "#/components/schemas/CartaoCredito"
       xml:
@@ -1415,6 +1541,7 @@ components:
         - tranca
         - bicicleta
         - ciclista
+        - cobranca
       properties:
         id:
           type: integer
@@ -1429,6 +1556,9 @@ components:
           type: integer
           example: 1
         ciclista:
+          type: integer
+          example: 1
+        cobranca:
           type: integer
           example: 1
       xml:
@@ -1468,6 +1598,28 @@ components:
           schema:
             $ref: "#/components/schemas/Bicicleta"
       description: Objeto de bicicleta
+      required: true
+    InclusaoDeBicicleta:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/InclusaoDeBicicleta"
+        application/xml:
+          schema:
+            $ref: "#/components/schemas/InclusaoDeBicicleta"
+      description:
+        Objeto de inclusão de nova bicicleta
+      required: true
+    ExclusaoDeBicicleta:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ExclusaoDeBicicleta"
+        application/xml:
+          schema:
+            $ref: "#/components/schemas/ExclusaoDeBicicleta"
+      description:
+        Objeto de exclusão de bicicleta
       required: true
     Tranca:
       content:
