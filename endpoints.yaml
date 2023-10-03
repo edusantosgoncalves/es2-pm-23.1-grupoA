@@ -93,27 +93,6 @@ paths:
         "404":
           description: Ciclista não encontrado
 
-  /ciclista/existeEmail/{email}:
-    get:
-      tags:
-        - Pessoa
-      description: Verifica se existe um ciclista com o email informado
-      parameters:
-        - name: email
-          in: path
-          description: Email do ciclista
-          required: true
-          schema:
-            type: string
-      responses:
-        "200":
-          description: Retorna se existe ou não um ciclista com o e-mail fornecido
-          content:
-            application/json:
-              schema:
-                type: boolean
-                example: true
-
   /ciclista/{idCiclista}/cartaoDeCredito:
     put:
       tags:
@@ -167,11 +146,33 @@ paths:
         "400":
           description: Solicitação inválida. Os dados não correspondem a um registro pendente.
 
+  /ciclista/existeEmail/{email}:
+    get:
+      tags:
+        - Pessoa
+      summary: Verifica se existe um ciclista com o email informado
+      parameters:
+        - name: email
+          in: path
+          description: Email do ciclista
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Retorna se existe ou não um ciclista com o e-mail fornecido
+          content:
+            application/json:
+              schema:
+                type: boolean
+                example: true
+
   /enviarEmail:
     post:
       tags:
         - Pessoa
-      description: Envia email para um ciclista ou funcionário, a ser indicado no corpo da requisição seu id e tipo (ciclista/funcionário), além do assunto e descrição do e-mail
+      summary: Envia email para um ciclista ou funcionário
+      description: A pessoa vai ser indicada no corpo da requisição com seu id e tipo (ciclista/funcionário), além do assunto e descrição do e-mail
       responses:
         "200":
           description: Email enviado com sucesso
@@ -184,8 +185,7 @@ paths:
     get:
       tags:
         - Pessoa
-      description: Retorna todos os funcionários
-      parameters: []
+      summary: Retorna todos os funcionários
       responses:
         "200":
           description: Funcionários retornados.
@@ -198,8 +198,7 @@ paths:
     post:
       tags:
         - Pessoa
-      description: Adiciona um novo funcionário
-      parameters: []
+      summary: Adiciona um novo funcionário
       responses:
         "201":
           description: Funcionário criado
@@ -220,7 +219,7 @@ paths:
     get:
       tags:
         - Pessoa
-      description: Retorna o funcionário com a matricula informada.
+      summary: Retorna o funcionário com a matricula informada.
       parameters:
         - name: matricula
           in: path
@@ -243,7 +242,7 @@ paths:
     put:
       tags:
         - Pessoa
-      description: Atualiza um funcionário existente
+      summary: Atualiza um funcionário existente
       parameters:
         - name: matricula
           in: path
@@ -272,7 +271,7 @@ paths:
     delete:
       tags:
         - Pessoa
-      description: Remove um funcionário existente
+      summary: Remove um funcionário existente
       parameters:
         - name: matricula
           in: path
@@ -324,6 +323,28 @@ paths:
                 $ref: "#/components/schemas/BicicletaAllResponse"
 
   /bicicleta/{idBicicleta}:
+    get:
+      tags:
+        - Infraestrutura
+      summary: Retornar dados de uma bicicleta existente
+      operationId: getBicicleta
+      parameters:
+        - name: idBicicleta
+          in: path
+          description: Id da bicicleta
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Bicicleta retornada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BicicletaResponse"
+        "404":
+          description: Bicicleta não encontrada
     put:
       tags:
         - Infraestrutura
@@ -389,12 +410,8 @@ paths:
             type: integer
             format: int64
       responses:
-        "200":
+        "204":
           description: Bicicleta incluída na rede com sucesso
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/BicicletaResponse"
         "402":
           description: Erro ao enviar o email # fluxo de exceção entra aqui??
         "404":
@@ -417,12 +434,8 @@ paths:
             type: integer
             format: int64
       responses:
-        "200":
+        "204":
           description: Bicicleta removida da rede com sucesso
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/BicicletaResponse"
         "402":
           description: Erro ao enviar o email # fluxo de exceção entra aqui??
         "404":
@@ -463,8 +476,7 @@ paths:
         content:
           application/json:
             schema:
-              type: string
-              example: "EM USO"
+              $ref: "#/components/schemas/StatusBicicleta"
 
   /totem:
     post:
@@ -502,6 +514,29 @@ paths:
                 $ref: "#/components/schemas/TotemAllResponse"
 
   /totem/{idTotem}:
+    get:
+      tags:
+        - Infraestrutura
+      summary: Retornar dados de um totem existente
+      operationId: getTotem
+      parameters:
+        - name: idTotem
+          in: path
+          description: Id do totem
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Totem retornado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TotemResponse"
+        "404":
+          description: Totem não encontrado
+          
     put:
       tags:
         - Infraestrutura
@@ -588,6 +623,29 @@ paths:
                 $ref: "#/components/schemas/TrancaAllResponse"
 
   /tranca/{idTranca}:
+    get:
+      tags:
+        - Infraestrutura
+      summary: Obter dados de uma tranca
+      operationId: getTranca
+      parameters:
+        - name: idTranca
+          in: path
+          description: Id da tranca
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Tranca retornada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TrancaResponse"
+        "404":
+          description: Tranca não encontrada
+          
     put:
       tags:
         - Infraestrutura
@@ -638,56 +696,6 @@ paths:
         "404":
           description: Tranca não encontrada
 
-  /tranca/{idTranca}/trancar:
-    put:
-      tags:
-        - Infraestrutura
-      summary: Realizar o fechamento de uma tranca.
-      description: Muda o status da tranca para "LIVRE"
-      operationId: fecharTranca
-      parameters:
-        - name: idTranca
-          in: path
-          description: Id da tranca
-          required: true
-          schema:
-            type: integer
-            format: int64
-      responses:
-        "200":
-          description: Tranca fechada com sucesso
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/TrancaResponse"
-        "404":
-          description: Bicicleta não encontrada
-
-  /tranca/{idTranca}/liberar:
-    put:
-      tags:
-        - Infraestrutura
-      summary: Realizar a abertura de uma tranca
-      description: Muda o status da tranca para "OCUPADA"
-      operationId: abrirTranca
-      parameters:
-        - name: idTranca
-          in: path
-          description: Id da tranca
-          required: true
-          schema:
-            type: integer
-            format: int64
-      responses:
-        "200":
-          description: Tranca aberta com sucesso
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/TrancaResponse"
-        "404":
-          description: Tranca não encontrada
-
   /tranca/{idTranca}/associarTotem:
     put:
       tags:
@@ -703,39 +711,12 @@ paths:
             type: integer
             format: int64
       responses:
-        "200":
+        "204":
           description: Tranca incluída com sucesso
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/TrancaResponse"
-      requestBody:
-        $ref: "#/components/requestBodies/Tranca"
-
-  /tranca/{idTranca}/estaLivre:
-    get:
-      tags:
-        - Infraestrutura
-      summary: Retorna se a tranca está livre
-      operationId: isTotemFree
-      parameters:
-        - name: idTranca
-          in: path
-          description: Id da tranca
-          required: true
-          schema:
-            type: integer
-            format: int64
-      responses:
-        "200":
-          description: Status da tranca retornado.
-          content:
-            application/json:
-              schema:
-                type: boolean
-                example: true
         "404":
-          description: Totem não encontrado
+          description: Tranca não encontrada
+      requestBody:
+        $ref: "#/components/requestBodies/IncluirTrancaTotem"
 
   /tranca/{idTranca}/bicicleta:
     get:
@@ -778,12 +759,41 @@ paths:
             type: integer
             format: int64
       responses:
-        "200":
+        "204":
           description: Tranca removida do totem com sucesso
         "404":
           description: Tranca não encontrada
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RemoverTrancaTotem'
   
   /tranca/{idTranca}/status:
+    get:
+      tags:
+        - Infraestrutura
+      summary: Retorna o status da tranca
+      operationId: getStatus
+      parameters:
+        - name: idTranca
+          in: path
+          description: Id da tranca
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Status da tranca retornado.
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "OCUPADA"
+        "404":
+          description: Tranca não encontrada.
+          
     put:
       tags:
         - Infraestrutura
@@ -872,7 +882,7 @@ paths:
     post:
       tags:
         - Financeiro
-      description: Efetua uma cobrança.
+      summary: Efetua uma cobrança.
       responses:
         "200":
           description: Cobranca registrada com sucesso.
@@ -895,7 +905,7 @@ paths:
     post:
       tags:
         - Financeiro
-      description: Efetua o aluguel de determinada bicicleta a um ciclista
+      summary: Efetua o aluguel de determinada bicicleta a um ciclista
       responses:
         "200":
           description: Aluguel efetuado com sucesso
@@ -918,7 +928,7 @@ paths:
     post:
       tags:
         - Financeiro
-      description: Efetua a devolução de uma de determinada bicicleta a uma tranca
+      summary: Efetua a devolução de uma de determinada bicicleta a uma tranca
       responses:
         "200":
           description: Devolução efetuada com sucesso
@@ -941,7 +951,7 @@ paths:
     post:
       tags:
         - Financeiro
-      description: Registra uma cobrança em fila para ser processada posteriormente.
+      summary: Registra uma cobrança em fila para ser processada posteriormente.
       responses:
         "200":
           description: Cobranca registrada em fila com sucesso.
@@ -958,7 +968,7 @@ paths:
     post:
       tags:
         - Financeiro
-      description: Valida o cartão de crédito do ciclista
+      summary: Valida o cartão de crédito do ciclista
       responses:
         "200":
           description: Cartão validado com sucesso
@@ -977,6 +987,17 @@ paths:
       requestBody:
         $ref: "#/components/requestBodies/CartaoCredito"
 
+  /processarCobrancaEmFila:
+    post:
+      tags:
+        - Financeiro
+      summary: Processa as cobranças na fila.
+      responses:
+        "200":
+          description: Cobrancas processadas com sucesso.
+        "400":
+          description: Erro ao processar cobranças!
+          
 components:
   schemas:
     Ciclista:
@@ -1099,30 +1120,13 @@ components:
     InclusaoDeBicicleta:
       type: object
       required:
-        - marca
-        - modelo
-        - ano
-        - status
         - idTranca
         - matriculaFuncionario
       properties:
-        marca:
-          type: string
-          example: Merida
-        modelo:
-          type: string
-          example: Modelo1
-        ano:
-          type: string
-          format: date
-          example: 2019
-        status:
-          type: string
-          example: nova
         idTranca:
           type: integer
           format: int64
-          example: 12345
+          example: 1
         matriculaFuncionario:
           type: integer
           format: int64
@@ -1132,25 +1136,12 @@ components:
     ExclusaoDeBicicleta:
       type: object
       required:
-        - marca
-        - modelo
-        - ano
         - status
         - matriculaFuncionario
       properties:
-        marca:
-          type: string
-          example: Merida
-        modelo:
-          type: string
-          example: Modelo1
-        ano:
-          type: string
-          format: date
-          example: 2019
         status:
           type: string
-          example: nova
+          example: EM REPARO
         matriculaFuncionario:
           type: integer
           format: int64
@@ -1297,15 +1288,6 @@ components:
             example: Modelo de Tranca
         xml:
           name: TrancaAllResponse
-    StatusTranca:
-      type: string
-      enum:
-        - LIVRE
-        - OCUPADA
-        - EM_REPARO
-        - APOSENTADA
-      xml:
-        name: StatusTranca
     Totem:
       type: object
       required:
@@ -1585,7 +1567,56 @@ components:
           example: 1
       xml:
         name: Devolucao
-
+    IncluirTrancaTotem:
+      type: object
+      properties:
+        idTotem:
+          type: integer
+          example: 1
+        matriculaFuncionario:
+          type: integer
+          format: int64
+          example: 1
+      xml:
+        name: RemoverTranca
+    RemoverTrancaTotem:
+      type: object
+      properties:
+        status:
+          type: string
+          example: reparo
+        matriculaFuncionario:
+          type: integer
+          format: int64
+          example: 12345
+      xml:
+        name: RemoverTranca
+    StatusTranca:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+            - LIVRE
+            - OCUPADA
+            - EM_REPARO
+            - APOSENTADA
+      xml:
+        name: StatusTranca
+    StatusBicicleta:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+            - DISPONIVEL
+            - EM_USO
+            - REPARO_SOLICITADO
+            - EM_REPARO
+            - APOSENTADA
+      xml:
+        name: StatusBicicleta
+        
   requestBodies:
     Ciclista:
       content:
@@ -1616,7 +1647,7 @@ components:
           schema:
             $ref: "#/components/schemas/InclusaoDeBicicleta"
       description:
-        Objeto de inclusão de nova bicicleta
+        Objeto de inclusão de bicicleta em tranca
       required: true
     ExclusaoDeBicicleta:
       content:
@@ -1627,7 +1658,7 @@ components:
           schema:
             $ref: "#/components/schemas/ExclusaoDeBicicleta"
       description:
-        Objeto de exclusão de bicicleta
+        Objeto de desassociação de bicicleta a tranca
       required: true
     Tranca:
       content:
@@ -1709,3 +1740,11 @@ components:
         application/xml:
           schema:
             $ref: "#/components/schemas/Devolucao"
+    IncluirTrancaTotem:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/IncluirTrancaTotem"
+        application/xml:
+          schema:
+            $ref: "#/components/schemas/IncluirTrancaTotem"
