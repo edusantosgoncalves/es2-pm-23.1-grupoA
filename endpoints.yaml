@@ -789,8 +789,7 @@ paths:
           content:
             application/json:
               schema:
-                type: string
-                example: "OCUPADA"
+                $ref: "#/components/schemas/StatusTranca"
         "404":
           description: Tranca não encontrada.
           
